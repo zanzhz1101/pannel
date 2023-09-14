@@ -1,0 +1,31 @@
+name: Build EXE
+
+on:
+  push:
+    branches:
+      - main  # 根据你的主分支名称进行调整
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x  # 使用你的 Python 版本
+
+
+    - name: Build EXE
+      run: |
+        python -m pip install pyinstaller
+        pyinstaller -F test1.py  # 替换 "your_script.py" 为你的 Python 脚本文件名
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v2
+      with:
+        name: exe-files
+        path: dist/
