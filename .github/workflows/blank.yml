@@ -1,31 +1,41 @@
-name: Build EXE
+name: Build and Package Python App
 
 on:
   push:
     branches:
-      - main  # 根据你的主分支名称进行调整
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Python
+    - name: Set up Python 3.x
       uses: actions/setup-python@v2
       with:
-        python-version: 3.x  # 使用你的 Python 版本
+        python-version: 3.11
 
-
-    - name: Build EXE
+    - name: Install dependencies
       run: |
-        python -m pip install pyinstaller
-        pyinstaller -F test1.py  # 替换 "your_script.py" 为你的 Python 脚本文件名
+        pip install pyinstaller
+        pip install pywin32
+      shell: bash
 
-    - name: Upload EXE
+    - name: Build exe
+      run: |
+        pyinstaller -F --onefile -w --upx-dir=/path/to/upx test1.py
+      shell: bash
+
+    - name: Compress exe with UPX
+      run: |
+        /path/to/upx/upx -o /path/to/output/folder/test1.exe /path/to/build/folder/test1
+      shell: bash
+
+    - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: exe-files
-        path: dist/
+        name: compiled-exe
+        path: /path/to/output/folder/test1.exe
