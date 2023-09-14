@@ -18,21 +18,13 @@ jobs:
       with:
         python-version: 3.11.4
 
-    - name: Download UPX
-      run: |
-        Invoke-WebRequest -Uri https://github.com/upx/upx/releases/download/v4.1.0/upx-4.1.0-win64.zip -OutFile upx.zip
-        Expand-Archive -Path upx.zip -DestinationPath upx
-        Set-Location -Path upx
-        Copy-Item -Path .\upx.exe -Destination $env:GITHUB_WORKSPACE\upx.exe
-      shell: powershell
-
     - name: Install dependencies
       run: pip install pyinstaller
       working-directory: ${{ github.workspace }}
 
     - name: Build EXE
       run: |
-        pyinstaller --onefile -w -F -upx test1.py
+        pyinstaller --onefile -w -F test1.py
       working-directory: ${{ github.workspace }}
 
     - name: Upload EXE
